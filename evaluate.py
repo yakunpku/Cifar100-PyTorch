@@ -38,19 +38,19 @@ def main():
     logger = logging.getLogger('base')
 
     device = "cuda:{}".format(args.gpu)
-    tgt_network = define_net(args.arch, pretrained=False, num_classes=args.num_classes).to(device)
+    network = define_net(args.arch, pretrained=False, num_classes=args.num_classes).to(device)
     checkpoint = load_checkpoint(args.checkpoint_path, logger)
-    tgt_network.load_state_dict(checkpoint['state_dict'])
+    network.load_state_dict(checkpoint['state_dict'])
     
     test_dataloader = create_dataloader(cfg.test_image_dir, cfg.test_image_list, phase='test')
 
-    macs, params = get_model_complexity_info(tgt_network, (3, 32, 32), as_strings=True,
+    macs, params = get_model_complexity_info(network, (3, 32, 32), as_strings=True,
                                                 print_per_layer_stat=False, verbose=True)
     
     logger.info('Network: {}'.format(args.arch))
     logger.info('{} {}'.format('Computational complexity: ', macs))
     logger.info('{} {}'.format('Number of parameters: ', params))
-    top1, top5, _ = Evaluator.eval(tgt_network, device, test_dataloader)
+    top1, top5, _ = Evaluator.eval(network, device, test_dataloader)
     logger.info('Evaluate top1: {0:.3f}, top5: {1:.3f}'.format(top1, top5))
 
 
