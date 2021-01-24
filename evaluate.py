@@ -14,8 +14,8 @@ from ptflops import get_model_complexity_info
 
 def parse_args():
     import argparse
-    parser = argparse.ArgumentParser(description='The args for training the classifier on pedestrian trajectory datasets.')
-    parser.add_argument('--which-model', type=str,
+    parser = argparse.ArgumentParser(description='The args for training the classifier on cifar-100 datasets.')
+    parser.add_argument('--arch', type=str,
                         required=True, 
                         help='the classifier network')
     parser.add_argument('--checkpoint-path', type=str,
@@ -38,19 +38,20 @@ def main():
     logger = logging.getLogger('base')
 
     device = "cuda:{}".format(args.gpu)
-    tgt_network = define_net(args.which_model, pretrained=False, num_classes=args.num_classes).to(device)
-    tgt_network = load_checkpoint(tgt_network, args.checkpoint_path, logger)
-
+    tgt_network = define_net(args.arch, pretrained=False, num_classes=args.num_classes).to(device)
+    checkpoint = load_checkpoint(args.checkpoint_path, logger)
+    tgt_network.load_state_dict(checkpoint['state_dict'])
+    
     test_dataloader = create_dataloader(cfg.test_image_dir, cfg.test_image_list, phase='test')
 
     macs, params = get_model_complexity_info(tgt_network, (3, 32, 32), as_strings=True,
-                                           print_per_layer_stat=False, verbose=True)
+                                                print_per_layer_stat=False, verbose=True)
     
-    logger.info('Network: {}'.format(args.which_model))
+    logger.info('Network: {}'.format(args.arch))
     logger.info('{} {}'.format('Computational complexity: ', macs))
     logger.info('{} {}'.format('Number of parameters: ', params))
-    accuracy, _ = Evaluator.eval(tgt_network, device, test_dataloader)
-    logger.info('Evaluate accuacy: {:.3f}'.format(accuracy))
+    top1, top5, _ = Evaluator.eval(tgt_network, device, test_dataloader)
+    logger.info('Evaluate top1: {0:.3f}, top5: {1:.3f}'.format(top1, top5))
 
 
 if __name__ == '__main__':

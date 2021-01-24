@@ -12,6 +12,12 @@ from models import define_net
 from utils.lr_schedulers import WarmUpMultiStepLR, WarmUpCosineLR
 from trainer import trainer
 
+import torch.utils.data as data
+import torchvision.transforms as transforms
+import torchvision.datasets as datasets
+
+from utils.meters import AverageMeter
+
 
 def set_random_seed(seed):
     random.seed(seed)
@@ -25,23 +31,21 @@ def parse_args():
     import argparse
     parser = argparse.ArgumentParser(description='The args for training the classifier on pedestrian trajectory datasets.')
 
-    ## model 
-    parser.add_argument('--which-model', type=str,
+    ## Architecture
+    parser.add_argument('--arch', type=str,
                         required=True, 
                         help='the classifier network')
-    parser.add_argument('--pretrained', action='store_true',
-                        help='To initialized the network weights with pretrained weights on ImageNet.')
     parser.add_argument('--num-classes', type=int,
                         default=100,
                         help='the number of classes in the classification dataset')
     
-    ## loss
+    ## Loss Function
     parser.add_argument('--loss_type', type=str,
                         default='ce',
                         choices=['ce'],
                         help='the loss function for network')
     
-    ## optimizer
+    ## Optimization
     parser.add_argument('--optimizer', type=str,
                         default='SGD',
                         choices=['SGD', 'Adam'],
@@ -81,7 +85,9 @@ def parse_args():
                         default=[60, 120, 160],
                         help="milestones for the learning rate decay")
 
-    ## train configs
+    ## Train Configs
+    parser.add_argument('--pretrained', action='store_true',
+                        help='To initialized the network weights with pretrained weights on ImageNet.')
     parser.add_argument('--num-epochs', type=int, 
                         default=200, 
                         help='the max number of epochs') 
@@ -91,17 +97,21 @@ def parse_args():
     parser.add_argument('--num-workers', type=int,
                         default=6,
                         help='the number of workers for loading dataset')
-    parser.add_argument('--gpu', type=int, 
-                        default=0, 
-                        help='to assign the gpu to train the network') 
     parser.add_argument('--seed', type=int,
                         default=10007,
                         help='the random seed')
 
-    ## save checkpoint
+    ## Devices
+    parser.add_argument('--gpu', type=int, 
+                        default=0, 
+                        help='to assign the gpu to train the network') 
+
+    ## Checkpoints
     parser.add_argument('--checkpoint-cycle', type=int, 
                         default=5, 
                         help='the cycle epoch to store checkpoint')
+    parser.add_argument('--resume', default='', type=str, 
+                    help="path to previous checkpoint (default: '')")
     parser.add_argument('--model-store-dir', type=str, 
                         default='./experiments', 
                         help='the classification model store folder')
@@ -137,13 +147,13 @@ class Runner(object):
         
         return loss_func
 
-    def build_scheduler(self, optimizer):
+    def build_scheduler(self, optimizer, start_epoch=0):
         if self.args.scheduler == 'step_lr':
             lr_scheduler = WarmUpMultiStepLR(optimizer, self.args.milestones, gamma=self.args.lr_gamma, warmup_factor=1.0e-4, 
-                                                warmup_iters=self.args.warmup_step, warmup_method=self.args.warmup_method)
+                                                warmup_iters=self.args.warmup_step, warmup_method=self.args.warmup_method, last_epoch=start_epoch-1)
         elif self.args.scheduler == 'cosine_lr':
             lr_scheduler = WarmUpCosineLR(optimizer, self.args.num_epochs, warmup_factor=1.0e-4,
-                                                warmup_iters=self.args.warmup_step, warmup_method=self.args.warmup_method)
+                                                warmup_iters=self.args.warmup_step, warmup_method=self.args.warmup_method, last_epoch=start_epoch-1)
         else:
             raise NotImplementedError('The learning rate scheduler {} is not implemented.'.format(self.args.scheduler))
         return lr_scheduler
@@ -151,17 +161,28 @@ class Runner(object):
     def run(self):
         device = 'cuda:{}'.format(self.args.gpu)
 
-        train_dataloader = create_dataloader(cfg.train_image_dir, cfg.train_image_list, phase='train', batch_size=self.args.batch_size, num_workers=self.args.num_workers)
+        train_dataloader = create_dataloader(cfg.train_image_dir, cfg.train_image_list, phase='train', \
+            batch_size=self.args.batch_size, num_workers=self.args.num_workers)
         test_dataloader = create_dataloader(cfg.test_image_dir, cfg.test_image_list, phase='test')
+
+        model_store_path = os.path.join(self.args.model_store_dir, self.args.arch)
         
-        model_store_path = os.path.join(self.args.model_store_dir, self.args.which_model)
-        network = define_net(self.args.which_model, self.args.pretrained, num_classes=self.args.num_classes).to(device)
+        network = define_net(self.args.arch, self.args.pretrained, num_classes=self.args.num_classes).to(device)
         optimizer = self.build_optimizer(network)
-        lr_scheduler = self.build_scheduler(optimizer)
+        
+        start_epoch = 0
+        if self.args.resume:
+            checkpoint = torch.load(self.args.resume)
+            start_epoch = checkpoint['epoch']
+            network.load_state_dict(checkpoint['state_dict'])
+            optimizer.load_state_dict(checkpoint['optimizer'])
+
+        lr_scheduler = self.build_scheduler(optimizer, start_epoch)
         loss_func = self.build_loss_func()
 
         trainer.Trainer(self.args, 
                         device, 
+                        start_epoch,
                         network, 
                         optimizer, 
                         lr_scheduler, 
@@ -171,7 +192,6 @@ class Runner(object):
                         model_store_path, 
                         self.logger
                         ).train()
-
 
 def main():
     args = parse_args()
@@ -184,7 +204,6 @@ def main():
     logger = logging.getLogger('base')
 
     Runner(args, logger).run()
-
 
 if __name__ == '__main__':
     main()

@@ -24,30 +24,3 @@ class AverageMeter(object):
     @property
     def count(self):
         return self._count
-
-
-class SumMeter(object):
-    """To store the sum value and compute the average
-    """
-    def __init__(self):
-        self.reset()
-    
-    def reset(self):
-        self._sum = 0.
-        self._count = 0
-    
-    def update(self, s, n):
-        self._sum += s
-        self._count += n
-    
-    @property
-    def sum(self):
-        return self._sum
-
-    @property
-    def count(self):
-        return self._count
-
-    @property
-    def avg(self):
-        return self._sum / self._count
