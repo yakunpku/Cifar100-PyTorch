@@ -33,7 +33,7 @@ class WarmUpMultiStepLR(_LRScheduler):
                 verbose=False
         ):
         if not (list(milestones) == sorted(milestones)):
-            raise ValueEroor("Milestones:{} should be a list of increasing intergers.".format(milestones))
+            raise ValueEroor("Milestones should be a list of increasing intergers. Got {}".format(milestones))
         self.milestones = milestones
         self.gamma = gamma
         self.warmup_factor = warmup_factor
