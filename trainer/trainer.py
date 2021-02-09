@@ -56,15 +56,15 @@ class Trainer(object):
             end_time = time.time()
             cost_time = end_time - start_time
             batch_time.update(cost_time)
-            self.logger.info("Epoch: {0} / {1}, Cost Time: {2:.3f} s, ETA: {3:.3f} h, LR: {4:.3f}" \
+            self.logger.info("Epoch: {0} / {1}, Cost Time: {2:.3f} s, ETA: {3:.3f} h, LR: {4:.5f}" \
             " Train Loss: {5:.3f}, Train Top1: {6:.3f}%, Train Top5: {7:.3f}%," \
             " Test Loss: {8:.3f}, Test Top1: {9:.3f}%, Test Top5: {10:.3f}%".format(
                 epoch, self.args.num_epochs, cost_time, (batch_time.avg*(self.args.num_epochs-epoch-1)) / 3600, current_lr, 
                 losses.avg, top1.avg, top5.avg, 
                 test_loss, test_top1, test_top5))
-
-            best_acc = max(best_acc, test_top1)
+            
             if epoch % self.args.checkpoint_cycle == 0:
+                best_acc = max(best_acc, test_top1)
                 save_checkpoint(self.network, self.args.arch, epoch, test_top1, best_acc, self.optimizer, \
                     self.model_store_path, is_best=(best_acc == test_top1), logger=self.logger)
             

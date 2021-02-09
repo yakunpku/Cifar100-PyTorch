@@ -131,7 +131,7 @@ class Runner(object):
             if v.requires_grad:
                 optim_params.append(v)
         if self.args.optimizer == 'SGD':
-            optimizer = torch.optim.SGD(optim_params, lr=self.args.lr, weight_decay=self.args.wd, momentum=self.args.momentum)
+            optimizer = torch.optim.SGD(optim_params, lr=self.args.lr, weight_decay=self.args.wd, momentum=self.args.momentum, nesterov=True)
         elif self.args.optimizer == 'Adam':
             optimizer = torch.optim.Adam(optim_params, lr=self.args.lr, weight_decay=self.args.wd)
         else:

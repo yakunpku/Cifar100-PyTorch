@@ -41,7 +41,8 @@ def main():
     network = define_net(args.arch, pretrained=False, num_classes=args.num_classes).to(device)
     checkpoint = load_checkpoint(args.checkpoint_path, logger)
     network.load_state_dict(checkpoint['state_dict'])
-    
+
+    logger.info('best acc: {:.3f}'.format(float(checkpoint['best_acc'].numpy())))
     test_dataloader = create_dataloader(cfg.test_image_dir, cfg.test_image_list, phase='test')
 
     macs, params = get_model_complexity_info(network, (3, 32, 32), as_strings=True,
