@@ -5,10 +5,10 @@ from torch.optim.lr_scheduler import _LRScheduler
 
 
 def _get_warmup_factor_at_iter(
-    method: str,
-    iter: int,
-    warmup_iters: int,
-    warmup_factor: float,
+        method: str,
+        iter: int,
+        warmup_iters: int,
+        warmup_factor: float,
     ):
     if iter >= warmup_iters:
         return 1.0
@@ -39,7 +39,7 @@ class WarmUpMultiStepLR(_LRScheduler):
         self.warmup_factor = warmup_factor
         self.warmup_iters = warmup_iters
         self.warmup_method = warmup_method
-        super(WarmUpMultiStepLR, self).__init__(optimizer, last_epoch, verbose)
+        super(WarmUpMultiStepLR, self).__init__(optimizer, last_epoch)
     
     def get_lr(self):
         warmup_factor = _get_warmup_factor_at_iter(self.warmup_method, self.last_epoch, self.warmup_iters, self.warmup_factor)
@@ -51,7 +51,7 @@ class WarmUpMultiStepLR(_LRScheduler):
         ]
 
 
-class WarmUpCosineLR():
+class WarmUpCosineLR(_LRScheduler):
     def __init__(self, 
                 optimizer, 
                 max_iters,
@@ -59,12 +59,11 @@ class WarmUpCosineLR():
                 warmup_iters=50,
                 warmup_method='linear',
                 last_epoch=-1,
-                verbose=False
         ):
         self.warmup_factor = warmup_factor
         self.warmup_iters = warmup_iters
         self.warmup_method = warmup_method
-        super(WarmUpCosineLR, self).__init__(optimizer, last_epoch, verbose)
+        super(WarmUpCosineLR, self).__init__(optimizer, last_epoch)
     
     def get_lr(self):
         warmup_factor = _get_warmup_factor_at_iter(self.warmup_method, self.last_epoch, self.warmup_iters, self.warmup_factor)

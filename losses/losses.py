@@ -5,23 +5,15 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-def linear_combination(x, y, epsilon): 
-    return epsilon*x + (1-epsilon)*y
-
-
-def reduce_loss(loss, reduction='mean'):
-    return loss.mean() if reduction=='mean' else loss.sum() if reduction=='sum' else loss
-
-
 class LabelSmoothingCrossEntropy(nn.Module):
-    def __init__(self, epsilon:float=0.1, reduction:str='mean'):
+    def __init__(self, epsilon:float=0.1):
         super().__init__()
         self.epsilon = epsilon
-        self.reduction = reduction
     
     def forward(self, preds, target):
-        n = preds.size()[-1]
-        log_preds = F.log_softmax(preds, dim=-1)
-        loss = reduce_loss(-log_preds.sum(dim=-1), self.reduction)
-        nll = F.nll_loss(log_preds, target, reduction=self.reduction)
-        return linear_combination(loss/(n-1), nll, self.epsilon)
+        log_prob = F.log_softmax(preds, dim=-1)
+        q = torch.ones_like(preds) * self.epsilon / (preds.size(-1) - 1.)
+        q.scatter_(-1, target.unsqueeze(-1), (1. - self.epsilon))
+        loss = (-q * log_prob).sum(dim=-1).mean()
+        return loss
+    

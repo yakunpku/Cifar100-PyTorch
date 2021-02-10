@@ -2,11 +2,11 @@ import os
 import logging
 
 class Config:
-    train_image_dir = "/data/Images/cifar100/source/train/images"
-    train_image_list = "/data/Images/cifar100/source/train/image.list"
+    train_image_dir = "/mnt/lustre/tangshixiang/liuyakun1/Images/cifar100/source/train/images"
+    train_image_list = "/mnt/lustre/tangshixiang/liuyakun1/Images/cifar100/source/train/image.list"
 
-    test_image_dir = "/data/Images/cifar100/source/test/images"
-    test_image_list = "/data/Images/cifar100/source/test/image.list"
+    test_image_dir = "/mnt/lustre/tangshixiang/liuyakun1/Images/cifar100/source/test/images"
+    test_image_list = "/mnt/lustre/tangshixiang/liuyakun1/Images/cifar100/source/test/image.list"
 
     # pretrained = False
     # seed = 0
