@@ -17,7 +17,10 @@ def parse_args():
     parser = argparse.ArgumentParser(description='The args for training the classifier on cifar-100 datasets.')
     parser.add_argument('--arch', type=str,
                         required=True, 
-                        help='the classifier network')
+                        choices=['resnet-20', 'resnet-56', 'resnet-110'],
+                        help='the architecture of classifier network, which is only support : [resnet-20, resnet-56, resnet-110] currently!')
+    parser.add_argument('--block-name', type=str, default='BasicBlock',
+                    help='the building block for resnet : BasicBlock, Bottleneck (default: Basicblock for cifar10/cifar100)')
     parser.add_argument('--checkpoint-path', type=str,
                         required=True, 
                         help='the pretrained classification model path')
@@ -38,21 +41,21 @@ def main():
     logger = logging.getLogger('base')
 
     device = "cuda:{}".format(args.gpu)
-    network = define_net(args.arch, pretrained=False, num_classes=args.num_classes).to(device)
+    network = define_net(args.arch, args.block_name, args.num_classes).to(device)
     checkpoint = load_checkpoint(args.checkpoint_path, logger)
     network.load_state_dict(checkpoint['state_dict'])
 
-    logger.info('best acc: {:.3f}'.format(float(checkpoint['best_acc'].numpy())))
+    logger.info('Best Acc: {:.3f}'.format(float(checkpoint['best_acc'].numpy())))
     test_dataloader = create_dataloader(cfg.test_image_dir, cfg.test_image_list, phase='test')
 
     macs, params = get_model_complexity_info(network, (3, 32, 32), as_strings=True,
                                                 print_per_layer_stat=False, verbose=True)
     
     logger.info('Network: {}'.format(args.arch))
-    logger.info('{} {}'.format('Computational complexity: ', macs))
-    logger.info('{} {}'.format('Number of parameters: ', params))
+    logger.info('{} {}'.format('Computational Complexity: ', macs))
+    logger.info('{} {}'.format('Number of Parameters: ', params))
     top1, top5, _ = Evaluator.eval(network, device, test_dataloader)
-    logger.info('Evaluate top1: {0:.3f}, top5: {1:.3f}'.format(top1, top5))
+    logger.info('Evaluate Acc Top1: {0:.3f}%, Acc Top5: {1:.3f}%'.format(top1, top5))
 
 
 if __name__ == '__main__':

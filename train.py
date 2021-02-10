@@ -26,10 +26,14 @@ def parse_args():
     import argparse
     parser = argparse.ArgumentParser(description='The args for training the classifier on pedestrian trajectory datasets.')
 
-    ## Architecture
+    ## Network Architecture
     parser.add_argument('--arch', type=str,
                         required=True, 
-                        help='the classifier network')
+                        choices=['resnet-20', 'resnet-56', 'resnet-110'],
+                        help='the architecture of classifier network, which is only support : [resnet-20, resnet-56, resnet-110] currently!')
+    parser.add_argument('--block-name', type=str, default='BasicBlock',
+                        help='the building block for resnet : BasicBlock, Bottleneck (default: Basicblock for cifar10/cifar100)')
+
     parser.add_argument('--num-classes', type=int,
                         default=100,
                         help='the number of classes in the classification dataset')
@@ -82,7 +86,7 @@ def parse_args():
 
     ## Train Configs
     parser.add_argument('--pretrained', action='store_true',
-                        help='To initialized the network weights with pretrained weights on ImageNet.')
+                        help='To initialized the network weights with pretrained weights on ImageNet, which is not support on resnet cifar model.')
     parser.add_argument('--num-epochs', type=int, 
                         default=200, 
                         help='the max number of epochs') 
@@ -126,7 +130,7 @@ class Runner(object):
             if v.requires_grad:
                 optim_params.append(v)
         if self.args.optimizer == 'SGD':
-            optimizer = torch.optim.SGD(optim_params, lr=self.args.lr, weight_decay=self.args.wd, momentum=self.args.momentum, nesterov=True)
+            optimizer = torch.optim.SGD(optim_params, lr=self.args.lr, weight_decay=self.args.wd, momentum=self.args.momentum)
         elif self.args.optimizer == 'Adam':
             optimizer = torch.optim.Adam(optim_params, lr=self.args.lr, weight_decay=self.args.wd)
         else:
@@ -164,7 +168,7 @@ class Runner(object):
 
         model_store_path = os.path.join(self.args.model_store_dir, self.args.arch)
         
-        network = define_net(self.args.arch, self.args.pretrained, num_classes=self.args.num_classes).to(device)
+        network = define_net(self.args.arch, self.args.block_name, self.args.num_classes, pretrained=self.args.pretrained).to(device)
         optimizer = self.build_optimizer(network)
         
         start_epoch = 0

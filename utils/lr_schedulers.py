@@ -30,7 +30,6 @@ class WarmUpMultiStepLR(_LRScheduler):
                 warmup_iters=50,
                 warmup_method='linear',
                 last_epoch=-1,
-                verbose=False
         ):
         if not (list(milestones) == sorted(milestones)):
             raise ValueEroor("Milestones should be a list of increasing intergers. Got {}".format(milestones))
