@@ -7,7 +7,18 @@ from evaluator.evaluators import Evaluator
 
 
 class Trainer(object):
-    def __init__(self, args, device, start_epoch, network, optimizer, lr_scheduler, loss_func, train_dataloader, test_dataloader, model_store_path, logger):
+    def __init__(self, 
+                args, 
+                device, 
+                start_epoch, 
+                network, 
+                optimizer, 
+                lr_scheduler, 
+                loss_func, 
+                train_dataloader, 
+                test_dataloader, 
+                model_store_path, 
+                logger):
         self.args = args
         self.device = device
         self.start_epoch = start_epoch

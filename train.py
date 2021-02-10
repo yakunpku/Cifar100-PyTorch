@@ -9,14 +9,9 @@ from config import setup_logger
 from config import Config as cfg
 from datasets import create_dataloader
 from models import define_net
+from losses import losses
 from utils.lr_schedulers import WarmUpMultiStepLR, WarmUpCosineLR
 from trainer import trainer
-
-import torch.utils.data as data
-import torchvision.transforms as transforms
-import torchvision.datasets as datasets
-
-from utils.meters import AverageMeter
 
 
 def set_random_seed(seed):
@@ -42,8 +37,8 @@ def parse_args():
     ## Loss Function
     parser.add_argument('--loss_type', type=str,
                         default='ce',
-                        choices=['ce'],
-                        help='the loss function for network')
+                        choices=['ce', 'ls_ce'],
+                        help='the loss function for network: \n * ce: Cross Entropy; ls_ce: Label Smoothing Cross Entropy')
     
     ## Optimization
     parser.add_argument('--optimizer', type=str,
@@ -142,6 +137,8 @@ class Runner(object):
     def build_loss_func(self):
         if self.args.loss_type == 'ce':
             loss_func = nn.CrossEntropyLoss()
+        elif self.args.loss_type == 'ls_ce':
+            loss_func = losses.LabelSmoothingCrossEntropy()
         else:
             raise NotImplementedError('The loss function: {} is not implemented.'.format(self.args.loss_type))
         

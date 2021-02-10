@@ -9,7 +9,10 @@ class Evaluator(object):
     """ To evaluate the target model on dataset.
     """
     @staticmethod
-    def eval(tgt_model, device, dataloader, loss_func=None):
+    def eval(tgt_model, 
+            device, 
+            dataloader, 
+            loss_func=None):
         top1 = AverageMeter()
         top5 = AverageMeter()
         losses = None if loss_func is None else AverageMeter()
