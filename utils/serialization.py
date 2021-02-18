@@ -27,11 +27,11 @@ def save_checkpoint(network, network_label, epoch, test_top1, best_acc, optimize
     if is_best:
         shutil.copyfile(checkpoint_save_path, os.path.join(checkpoint_store_path, 'checkpoint_best.pth'))
     if logger is not None:
-        logger.info('Epoch: {}, save checkpoint: {} successful!'.format(epoch, checkpoint_save_path))
+        logger.info('Epoch: {}, save checkpoint: {} successfully!'.format(epoch, checkpoint_save_path))
 
 
 def load_checkpoint(checkpoint_path, logger=None):
     checkpoint = torch.load(checkpoint_path)
     if logger is not None:
-        logger.info('Load checkpoint: {} successful!'.format(checkpoint_path))
+        logger.info('Load checkpoint: {} successfully!'.format(checkpoint_path))
     return checkpoint
