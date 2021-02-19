@@ -3,9 +3,10 @@ gpu=$2
 
 python train.py \
 --arch $arch \
+--block-name Bottleneck \
 --seed 0 \
 --optimizer SGD \
---loss_type ls_ce \
+--loss_type ce \
 --num-classes 100 \
 --num-epochs 164 \
 --milestones 81 122 \
