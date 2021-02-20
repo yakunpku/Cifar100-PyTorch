@@ -24,56 +24,56 @@ def set_random_seed(seed):
 
 def parse_args():
     import argparse
-    parser = argparse.ArgumentParser(description='The arguments for training the classifier on CIFAR-100 datasets.')
+    parser = argparse.ArgumentParser(description="The arguments for training the classifier on CIFAR-100 dataset.")
 
     ## Network Architecture
     parser.add_argument('--arch', type=str,
                         required=True, 
                         choices=['resnet-20', 'resnet-56', 'resnet-110'],
-                        help='the architecture of classifier network, which is only support : [resnet-20, resnet-56, resnet-110] currently!')
+                        help="the architecture of classifier network, which is only support : [resnet-20, resnet-56, resnet-110] currently!")
     parser.add_argument('--block-name', type=str, default='BasicBlock',
-                        help='the building block for resnet : BasicBlock, Bottleneck (default: Basicblock for cifar10/cifar100)')
+                        help="the building block for resnet : BasicBlock, Bottleneck (default: Basicblock for cifar10/cifar100)")
 
     parser.add_argument('--num-classes', type=int,
                         default=100,
-                        help='the number of classes in the classification dataset')
+                        help="the number of classes in the classification dataset")
     
     ## Loss Function
     parser.add_argument('--loss_type', type=str,
                         default='ce',
                         choices=['ce', 'ls_ce'],
-                        help='the loss function for network: ce: Cross Entropy; ls_ce: Label Smoothing Cross Entropy')
+                        help="the loss function for network: ce: Cross Entropy; ls_ce: Label Smoothing Cross Entropy")
     
     ## Optimization
     parser.add_argument('--optimizer', type=str,
                         default='SGD',
                         choices=['SGD', 'Adam'],
-                        help='the optimizer for training networks')
+                        help="the optimizer for training networks")
     parser.add_argument('--momentum', type=float,
                         default=0.9,
-                        help='the momentum for optimizer')
+                        help="the momentum for optimizer")
     parser.add_argument('--learning-rate', '-lr', dest='lr', 
                         type=float, 
                         default=1.0e-2, 
-                        help='the learning rate for training networks')
+                        help="the learning rate for training networks")
     parser.add_argument('--lr-gamma',
                         type=float, 
                         default=0.1,
-                        help='the learning rate decay coefficient')
+                        help="the learning rate decay coefficient")
     parser.add_argument('--weight-decay', '-wd', dest='wd', 
                         type=float, 
                         default=5.0e-4, 
-                        help='the weight decay in network')
+                        help="the weight decay in network")
     parser.add_argument('--scheduler',
                         type=str, 
                         default='step_lr',
                         choices=['step_lr', 'cosine_lr'], 
-                        help='the lr scheduler')
+                        help="the lr scheduler")
     parser.add_argument('--warmup-method',
                         type=str, 
                         default='linear',
                         choices=['constant', 'linear'], 
-                        help='the lr warmup method')
+                        help="the lr warmup method")
     parser.add_argument('--warmup-step',
                         type=int,
                         default=5,
@@ -86,34 +86,34 @@ def parse_args():
 
     ## Train Configs
     parser.add_argument('--pretrained', action='store_true',
-                        help='To initialized the network weights with pretrained weights on ImageNet, which is not support on resnet cifar model.')
+                        help="To initialized the network weights with pretrained weights on ImageNet, which is not support on resnet cifar model.")
     parser.add_argument('--num-epochs', type=int, 
                         default=200, 
-                        help='the max number of epochs') 
+                        help="the max number of epochs") 
     parser.add_argument('--batch-size', type=int, 
                         default=128, 
-                        help='the dataset batch size for training network')
+                        help="the dataset batch size for training network")
     parser.add_argument('--num-workers', type=int,
                         default=6,
-                        help='the number of workers for loading dataset')
+                        help="the number of workers for loading dataset")
     parser.add_argument('--seed', type=int,
                         default=10007,
-                        help='the random seed')
+                        help="the random seed")
 
     ## Devices
     parser.add_argument('--gpu', type=int, 
                         default=0, 
-                        help='to assign the gpu device to train the network') 
+                        help="to assign the gpu device to train the network") 
 
     ## Checkpoints
     parser.add_argument('--checkpoint-cycle', type=int, 
                         default=5, 
-                        help='the cycle epoch to store checkpoint')
+                        help="the cycle epoch to store checkpoint")
     parser.add_argument('--resume', default='', type=str, 
                     help="path to previous checkpoint (default: '')")
     parser.add_argument('--model-store-dir', type=str, 
                         default='./experiments', 
-                        help='the classification model store folder')
+                        help="the classification model store folder")
     args = parser.parse_args()
     return args
 
