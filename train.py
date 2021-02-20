@@ -24,7 +24,7 @@ def set_random_seed(seed):
 
 def parse_args():
     import argparse
-    parser = argparse.ArgumentParser(description='The args for training the classifier on pedestrian trajectory datasets.')
+    parser = argparse.ArgumentParser(description='The arguments for training the classifier on CIFAR-100 datasets.')
 
     ## Network Architecture
     parser.add_argument('--arch', type=str,
@@ -42,13 +42,13 @@ def parse_args():
     parser.add_argument('--loss_type', type=str,
                         default='ce',
                         choices=['ce', 'ls_ce'],
-                        help='the loss function for network: \n * ce: Cross Entropy; ls_ce: Label Smoothing Cross Entropy')
+                        help='the loss function for network: ce: Cross Entropy; ls_ce: Label Smoothing Cross Entropy')
     
     ## Optimization
     parser.add_argument('--optimizer', type=str,
                         default='SGD',
                         choices=['SGD', 'Adam'],
-                        help='the optimizer for network')
+                        help='the optimizer for training networks')
     parser.add_argument('--momentum', type=float,
                         default=0.9,
                         help='the momentum for optimizer')
@@ -92,7 +92,7 @@ def parse_args():
                         help='the max number of epochs') 
     parser.add_argument('--batch-size', type=int, 
                         default=128, 
-                        help='the dataset batch size')
+                        help='the dataset batch size for training network')
     parser.add_argument('--num-workers', type=int,
                         default=6,
                         help='the number of workers for loading dataset')
@@ -103,7 +103,7 @@ def parse_args():
     ## Devices
     parser.add_argument('--gpu', type=int, 
                         default=0, 
-                        help='to assign the gpu to train the network') 
+                        help='to assign the gpu device to train the network') 
 
     ## Checkpoints
     parser.add_argument('--checkpoint-cycle', type=int, 
