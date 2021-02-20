@@ -1,4 +1,5 @@
 import os
+import os.path as osp
 import random
 import time
 import numpy as np
@@ -166,7 +167,7 @@ class Runner(object):
             batch_size=self.args.batch_size, num_workers=self.args.num_workers)
         test_dataloader = create_dataloader(cfg.test_image_dir, cfg.test_image_list, phase='test')
 
-        model_store_path = os.path.join(self.args.model_store_dir, self.args.arch)
+        model_store_path = osp.join(self.args.model_store_dir, self.args.arch)
         
         network = define_net(self.args.arch, self.args.block_name, self.args.num_classes, pretrained=self.args.pretrained).to(device)
         optimizer = self.build_optimizer(network)

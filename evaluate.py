@@ -14,22 +14,22 @@ from ptflops import get_model_complexity_info
 
 def parse_args():
     import argparse
-    parser = argparse.ArgumentParser(description='The args for training the classifier on cifar-100 datasets.')
+    parser = argparse.ArgumentParser(description="The arguments for training the classifier on CIFAR-100 dataset.")
     parser.add_argument('--arch', type=str,
                         required=True, 
                         choices=['resnet-20', 'resnet-56', 'resnet-110'],
-                        help='the architecture of classifier network, which is only support : [resnet-20, resnet-56, resnet-110] currently!')
+                        help="the architecture of classifier network, which is only support : [resnet-20, resnet-56, resnet-110] currently!")
     parser.add_argument('--block-name', type=str, default='BasicBlock',
-                    help='the building block for resnet : BasicBlock, Bottleneck (default: Basicblock for cifar10/cifar100)')
+                    help="the building block for resnet : BasicBlock, Bottleneck (default: Basicblock for CIFAR-10/CIFAR-100)")
     parser.add_argument('--checkpoint-path', type=str,
                         required=True, 
-                        help='the pretrained classification model path')
+                        help="the pretrained classification model path")
     parser.add_argument('--num-classes', type=int,
                         default=100,
-                        help='the number of classes in the classification dataset')
+                        help="the number of classes in the classification dataset")
     parser.add_argument('--gpu', type=int, 
                         default=0, 
-                        help='to assign the gpu to train the network')
+                        help="to assign the gpu to train the network")
     args = parser.parse_args()
     return args
 
