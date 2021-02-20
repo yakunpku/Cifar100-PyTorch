@@ -32,7 +32,7 @@ def parse_args():
                         choices=['resnet-20', 'resnet-56', 'resnet-110'],
                         help="the architecture of classifier network, which is only support : [resnet-20, resnet-56, resnet-110] currently!")
     parser.add_argument('--block-name', type=str, default='BasicBlock',
-                        help="the building block for resnet : BasicBlock, Bottleneck (default: Basicblock for cifar10/cifar100)")
+                        help="the building block for resnet : BasicBlock, Bottleneck (default: Basicblock for CIFAR-10/CIFAR-100)")
 
     parser.add_argument('--num-classes', type=int,
                         default=100,
