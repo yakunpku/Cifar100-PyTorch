@@ -59,6 +59,7 @@ class WarmUpCosineLR(_LRScheduler):
                 warmup_method='linear',
                 last_epoch=-1,
         ):
+        self.max_iters = max_iters
         self.warmup_factor = warmup_factor
         self.warmup_iters = warmup_iters
         self.warmup_method = warmup_method
@@ -70,6 +71,6 @@ class WarmUpCosineLR(_LRScheduler):
             base_lr 
             * warmup_factor 
             * 0.5
-            * (1.0 + math.cos(math.pi * iter  / self.max_iters))
+            * (1.0 + math.cos(math.pi * self.last_epoch  / self.max_iters))
             for base_lr in self.base_lrs
         ]
