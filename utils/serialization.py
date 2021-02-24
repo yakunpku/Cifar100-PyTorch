@@ -6,7 +6,6 @@ import shutil
 
 def save_checkpoint(network, network_label, epoch, test_top1, best_acc, optimizer, checkpoint_store_path, is_best=False, logger=None):
     checkpoint_filename = 'checkpoint_{:03d}_{}.pth'.format(epoch, network_label)
-    os.makedirs(checkpoint_store_path, exist_ok=True)
 
     checkpoint_save_path = os.path.join(checkpoint_store_path, checkpoint_filename)
     if isinstance(network, nn.parallel.DataParallel) or isinstance(network, nn.parallel.DistributedDataParallel):

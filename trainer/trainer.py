@@ -1,4 +1,6 @@
+import os
 import torch
+import numpy as np
 import time
 from utils.meters import AverageMeter
 from utils.eval import accuracy
@@ -39,6 +41,7 @@ class Trainer(object):
         top1 = AverageMeter()
         top5 = AverageMeter()
 
+        valid_logs = []
         best_acc = 0
         for epoch in range(self.start_epoch, self.args.num_epochs):
             start_time = time.time()
@@ -64,6 +67,8 @@ class Trainer(object):
             test_top1, test_top5, test_loss = Evaluator.eval(self.network, self.device, self.test_dataloader, self.loss_func)
             current_lr = self.optimizer.param_groups[0]['lr']
 
+            valid_logs.append((epoch, test_top1, test_top5))
+
             end_time = time.time()
             cost_time = end_time - start_time
             batch_time.update(cost_time)
@@ -80,3 +85,5 @@ class Trainer(object):
                     self.model_store_path, is_best=(best_acc == test_top1), logger=self.logger)
             
             self.lr_scheduler.step()
+        
+        np.savetxt(os.path.join(self.model_store_path, 'valid_logs.list'), valid_logs, fmt='%f')

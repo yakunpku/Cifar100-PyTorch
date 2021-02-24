@@ -4,6 +4,7 @@ import random
 import time
 import numpy as np
 import logging
+import shutil
 import torch
 import torch.nn as nn
 from config import setup_logger
@@ -169,6 +170,10 @@ class Runner(object):
 
         model_store_path = osp.join(self.args.model_store_dir, self.args.arch)
         
+        if os.path.exists(model_store_path):
+            shutil.rmtree(model_store_path)
+        os.makedirs(model_store_path, exist_ok=True)
+
         network = define_net(self.args.arch, self.args.block_name, self.args.num_classes, pretrained=self.args.pretrained).to(device)
         optimizer = self.build_optimizer(network)
         
