@@ -5,10 +5,10 @@ from torch.optim.lr_scheduler import _LRScheduler
 
 
 def _get_warmup_factor_at_iter(
-        method: str,
-        iter: int,
-        warmup_iters: int,
-        warmup_factor: float,
+        method : str,
+        iter : int,
+        warmup_iters : int,
+        warmup_factor : float,
     ):
     if iter >= warmup_iters:
         return 1.0
@@ -24,12 +24,12 @@ def _get_warmup_factor_at_iter(
 class WarmUpMultiStepLR(_LRScheduler):
     def __init__(self, 
                 optimizer, 
-                milestones,
-                gamma=0.1,
-                warmup_factor=1.0e-4,
-                warmup_iters=50,
-                warmup_method='linear',
-                last_epoch=-1,
+                milestones : list,
+                gamma : float = 0.1,
+                warmup_factor : float = 1.0e-4,
+                warmup_iters : int = 2,
+                warmup_method : str ='linear',
+                last_epoch : int = -1,
         ):
         if not (list(milestones) == sorted(milestones)):
             raise ValueEroor("Milestones should be a list of increasing intergers. Got {}".format(milestones))
@@ -53,11 +53,11 @@ class WarmUpMultiStepLR(_LRScheduler):
 class WarmUpCosineLR(_LRScheduler):
     def __init__(self, 
                 optimizer, 
-                max_iters,
-                warmup_factor=1.0e-3,
-                warmup_iters=50,
-                warmup_method='linear',
-                last_epoch=-1,
+                max_iters : int,
+                warmup_factor : float = 1.0e-3,
+                warmup_iters : int = 2,
+                warmup_method : str ='linear',
+                last_epoch : int = -1,
         ):
         self.max_iters = max_iters
         self.warmup_factor = warmup_factor

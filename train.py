@@ -170,7 +170,7 @@ class Runner(object):
 
         model_store_path = osp.join(self.args.model_store_dir, self.args.arch)
         
-        if os.path.exists(model_store_path):
+        if osp.exists(model_store_path):
             shutil.rmtree(model_store_path)
         os.makedirs(model_store_path, exist_ok=True)
 
