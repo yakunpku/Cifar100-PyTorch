@@ -19,4 +19,4 @@ python evaluate.py --arch resnet-110 --block-name bottleneck --checkpoint-path e
 |   resnet-110(Bottleneck Block)                 |      1.17 M    |      0.17      |    72.560 %   |    92.340 %    |
 |   resnet-110(Bottleneck Block, Label Smooth)   |      1.17 M    |      0.17      |    71.370 %   |    90.810 %    |
 |   resnet-110(Bottleneck Block, Warmup Step 5)  |      1.17 M    |      0.17      |    72.250 %   |    92.430 %    |
-|   resnet-110(Bottleneck Block, cosine_lr)  |      1.17 M    |      0.17      |    72.250 %   |    92.430 %    |
+|   resnet-110(Bottleneck Block, cosine_lr)      |      1.17 M    |      0.17      |    71.370 %   |    91.480 %    |
