@@ -1,12 +1,16 @@
 # Cifar100-PyTorch
 Classification on CIFAR-100 with PyTorch.
 
-## Train 
+## Preliminaries
+Please see the tutorials/cifar100_tutorials.ipynb to organize the train datasets and the test datasets.
+
+## Usage
+### Train 
 ```shell
 sh train_cifar100.sh resnet-110 0
 ```
 
-## Evaluate
+### Evaluate
 ```shell
 python evaluate.py --arch resnet-110 --block-name bottleneck --checkpoint-path experiments/resnet-110/checkpoint_best.pth --gpu 2
 ```
