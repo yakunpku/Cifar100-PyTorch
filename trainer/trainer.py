@@ -14,6 +14,7 @@ class Trainer(object):
                 device, 
                 start_epoch, 
                 network, 
+                metric_fc,
                 optimizer, 
                 lr_scheduler, 
                 loss_func, 
@@ -25,6 +26,7 @@ class Trainer(object):
         self.device = device
         self.start_epoch = start_epoch
         self.network = network
+        self.metric_fc = metric_fc
         self.optimizer = optimizer
         self.lr_scheduler = lr_scheduler
         self.loss_func = loss_func
@@ -35,6 +37,7 @@ class Trainer(object):
 
     def train(self):
         self.network.train()
+        self.metric_fc.train()
 
         batch_time = AverageMeter()
         losses = AverageMeter()
@@ -50,7 +53,8 @@ class Trainer(object):
                 targets = data_iter['targets'].to(self.device, dtype=torch.int64)
 
                 ## compute outputs
-                outputs = self.network(inputs)
+                features = self.network(inputs)
+                outputs = self.metric_fc(features, targets)
                 loss = self.loss_func(outputs, targets)
 
                 ## measure accuracy and record loss
@@ -64,7 +68,7 @@ class Trainer(object):
                 loss.backward()
                 self.optimizer.step()
 
-            test_top1, test_top5, test_loss = Evaluator.eval(self.network, self.device, self.test_dataloader, self.loss_func)
+            test_top1, test_top5, test_loss = Evaluator.eval(self.network, self.metric_fc, self.device, self.test_dataloader, self.loss_func)
             current_lr = self.optimizer.param_groups[0]['lr']
 
             valid_logs.append((epoch, test_top1, test_top5))
@@ -81,7 +85,7 @@ class Trainer(object):
             
             if epoch % self.args.checkpoint_cycle == 0:
                 best_acc = max(best_acc, test_top1)
-                save_checkpoint(self.network, self.args.arch, epoch, test_top1, best_acc, self.optimizer, 
+                save_checkpoint(self.network, self.metric_fc, self.args.arch, epoch, test_top1, best_acc, self.optimizer, 
                     self.model_store_path, is_best=(best_acc == test_top1), logger=self.logger)
             
             self.lr_scheduler.step()

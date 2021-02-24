@@ -3,9 +3,11 @@ import random
 import numpy as np
 import logging
 import torch
+import torch.nn as nn
 from config import setup_logger
 from config import Config as cfg
 from utils.serialization import load_checkpoint
+from utils.metrics import ArcMarginProduct
 from datasets import create_dataloader 
 from models import define_net
 from evaluator.evaluators import Evaluator
@@ -27,6 +29,13 @@ def parse_args():
     parser.add_argument('--num-classes', type=int,
                         default=100,
                         help="the number of classes in the classification dataset")
+    parser.add_argument('--metric', type=str,
+                        default='fc',
+                        choices=['fc', 'arc_margin'],
+                        help="The metric learning method: ['fc', 'arc_margin']")
+
+    parser.add_argument('--easy_margin', action='store_true', help="If easy margin in Arc Margin")
+
     parser.add_argument('--gpu', type=int, 
                         default=0, 
                         help="to assign the gpu to train the network")
@@ -42,8 +51,16 @@ def main():
 
     device = "cuda:{}".format(args.gpu)
     network = define_net(args.arch, args.block_name, args.num_classes).to(device)
+    
+    feature_dim = 64 * 1 if args.block_name.lower() == 'basicblock' else 64 * 4
+    if args.metric == 'arc_margin':
+        metric_fc = ArcMarginProduct(feature_dim, args.num_classes, s=30, m=0.5, easy_margin=args.easy_margin).to(device)
+    else:
+        metric_fc = nn.Linear(feature_dim, args.num_classes).to(device)
+
     checkpoint = load_checkpoint(args.checkpoint_path, logger)
-    network.load_state_dict(checkpoint['state_dict'])
+    network.load_state_dict(checkpoint['network_state_dict'])
+    metric_fc.load_state_dict(checkpoint['metric_fc_state_dict'])
 
     logger.info('Best Acc: {:.3f}'.format(float(checkpoint['best_acc'].numpy())))
     test_dataloader = create_dataloader(cfg.test_image_dir, cfg.test_image_list, phase='test')
@@ -54,7 +71,7 @@ def main():
     logger.info('Network: {}'.format(args.arch))
     logger.info('{} {}'.format('Computational Complexity: ', macs))
     logger.info('{} {}'.format('Number of Parameters: ', params))
-    top1, top5, _ = Evaluator.eval(network, device, test_dataloader)
+    top1, top5, _ = Evaluator.eval(network, metric_fc, device, test_dataloader)
     logger.info('Evaluate Acc Top1: {0:.3f}%, Acc Top5: {1:.3f}%'.format(top1, top5))
 
 

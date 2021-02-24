@@ -5,6 +5,8 @@ python train.py \
 --arch $arch \
 --block-name Bottleneck \
 --seed 0 \
+--metric arc_margin \
+--easy_margin \
 --optimizer SGD \
 --loss_type ce \
 --num-classes 100 \
@@ -14,6 +16,7 @@ python train.py \
 --learning-rate 0.1 \
 --lr-gamma 0.1 \
 --warmup-step -1 \
+--scheduler step_lr \
 --momentum 0.9 \
 --weight-decay 1.e-4 \
 --checkpoint-cycle 10 \

@@ -13,6 +13,7 @@ from datasets import create_dataloader
 from models import define_net
 from losses import losses
 from utils.lr_schedulers import WarmUpMultiStepLR, WarmUpCosineLR
+from utils.metrics import ArcMarginProduct, LinearProduct
 from trainer import trainer
 
 
@@ -40,6 +41,13 @@ def parse_args():
                         default=100,
                         help="the number of classes in the classification dataset")
     
+    parser.add_argument('--metric', type=str,
+                        default='fc',
+                        choices=['fc', 'arc_margin'],
+                        help="The metric learning method: ['fc', 'arc_margin']")
+
+    parser.add_argument('--easy_margin', action='store_true', help="If easy margin in Arc Margin")
+
     ## Loss Function
     parser.add_argument('--loss_type', type=str,
                         default='ce',
@@ -126,11 +134,13 @@ class Runner(object):
         self.logger = logger
         self.logger.info(self.args)
 
-    def build_optimizer(self, network):
+    def build_optimizer(self, network, metric_fc):
         optim_params = []
-        for k, v in network.named_parameters():
-            if v.requires_grad:
-                optim_params.append(v)
+        for model in [network, metric_fc]:
+            for k, v in model.named_parameters():
+                if v.requires_grad:
+                    optim_params.append(v)
+        
         if self.args.optimizer == 'SGD':
             optimizer = torch.optim.SGD(optim_params, lr=self.args.lr, weight_decay=self.args.wd, momentum=self.args.momentum)
         elif self.args.optimizer == 'Adam':
@@ -175,13 +185,23 @@ class Runner(object):
         os.makedirs(model_store_path, exist_ok=True)
 
         network = define_net(self.args.arch, self.args.block_name, self.args.num_classes, pretrained=self.args.pretrained).to(device)
-        optimizer = self.build_optimizer(network)
+        
+        feature_dim = 64 * 1 if self.args.block_name.lower() == 'basicblock' else 64 * 4
+        if self.args.metric == 'arc_margin':
+            metric_fc = ArcMarginProduct(feature_dim, self.args.num_classes, device=device, s=30, m=0.5, easy_margin=self.args.easy_margin).to(device)
+        elif self.args.metric == 'fc':
+            metric_fc = LinearProduct(feature_dim, self.args.num_classes).to(device)
+        else:
+            raise NotImplementedError('The metric type: {} is not implemented.'.format(self.args.metric))
+
+        optimizer = self.build_optimizer(network, metric_fc)
         
         start_epoch = 0
         if self.args.resume:
             checkpoint = torch.load(self.args.resume)
             start_epoch = checkpoint['epoch']
-            network.load_state_dict(checkpoint['state_dict'])
+            network.load_state_dict(checkpoint['network_state_dict'])
+            metric_fc.load_state_dict(checkpoint['metric_fc_state_dict'])
             optimizer.load_state_dict(checkpoint['optimizer'])
 
         lr_scheduler = self.build_scheduler(optimizer, start_epoch)
@@ -191,6 +211,7 @@ class Runner(object):
                         device, 
                         start_epoch,
                         network, 
+                        metric_fc, 
                         optimizer, 
                         lr_scheduler, 
                         loss_func, 
