@@ -7,7 +7,7 @@ import torch.nn as nn
 from config import setup_logger
 from config import Config as cfg
 from utils.serialization import load_checkpoint
-from utils.metrics import ArcMarginProduct
+from utils.metrics import ArcMarginProduct, LinearProduct
 from datasets import create_dataloader 
 from models import define_net
 from evaluator.evaluators import Evaluator
@@ -54,9 +54,11 @@ def main():
     
     feature_dim = 64 * 1 if args.block_name.lower() == 'basicblock' else 64 * 4
     if args.metric == 'arc_margin':
-        metric_fc = ArcMarginProduct(feature_dim, args.num_classes, s=30, m=0.5, easy_margin=args.easy_margin).to(device)
+        metric_fc = ArcMarginProduct(feature_dim, args.num_classes, device=device, s=30, m=0.5, easy_margin=args.easy_margin).to(device)
+    elif args.metric == 'fc':
+        metric_fc = LinearProduct(feature_dim, args.num_classes).to(device)
     else:
-        metric_fc = nn.Linear(feature_dim, args.num_classes).to(device)
+        raise NotImplementedError('The metric type: {} is not implemented.'.format(args.metric))
 
     checkpoint = load_checkpoint(args.checkpoint_path, logger)
     network.load_state_dict(checkpoint['network_state_dict'])

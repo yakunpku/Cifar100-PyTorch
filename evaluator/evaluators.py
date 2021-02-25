@@ -3,6 +3,7 @@ import time
 from utils.eval import accuracy
 from utils.meters import AverageMeter
 import torch
+import torch.nn.functional as F
 
 
 class Evaluator(object):
@@ -26,7 +27,7 @@ class Evaluator(object):
                 targets = data_iter['targets'].to(device, dtype=torch.int64)
 
                 features = network(inputs)
-                outputs = metric_fc(features, targets)
+                outputs = F.linear(F.normalize(features), F.normalize(metric_fc.weight))
 
                 prec1, prec5 = accuracy(outputs.data, targets.data, topk=(1, 5))
                 top1.update(prec1, inputs.size(0))
@@ -50,7 +51,8 @@ class Evaluator(object):
         with torch.no_grad():
             for data_iter in dataloader:
                 inputs = data_iter['inputs'].to(device)
-                features = network(inputs).squeeze().cpu().numpy()
+                features = network(inputs)
+                features = F.normalize(features).squeeze().cpu().numpy()
                 embeddings.append(features)
 
         return embeddings
