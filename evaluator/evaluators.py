@@ -27,7 +27,7 @@ class Evaluator(object):
                 targets = data_iter['targets'].to(device, dtype=torch.int64)
 
                 features = network(inputs)
-                outputs = F.linear(F.normalize(features), F.normalize(metric_fc.weight))
+                outputs = F.linear(F.normalize(features), F.normalize(metric_fc.weight)) * metric_fc.s
 
                 prec1, prec5 = accuracy(outputs.data, targets.data, topk=(1, 5))
                 top1.update(prec1, inputs.size(0))
@@ -52,7 +52,8 @@ class Evaluator(object):
             for data_iter in dataloader:
                 inputs = data_iter['inputs'].to(device)
                 features = network(inputs)
-                features = F.normalize(features).squeeze().cpu().numpy()
+                features = F.normalize(features).cpu().numpy()
                 embeddings.append(features)
 
+        embeddings = np.vstack(features)
         return embeddings

@@ -9,13 +9,14 @@ reference : https://github.com/ronghuaiyang/arcface-pytorch/blob/master/models/m
 '''
 
 class LinearProduct(nn.Module):
-    def __init__(self, in_features, out_features):
+    def __init__(self, in_features, out_features, s=30.0):
         super(LinearProduct, self).__init__()
+        self.s = s
         self.weight = Parameter(torch.FloatTensor(out_features, in_features))
         nn.init.xavier_uniform_(self.weight)
 
     def forward(self, input, label):
-        output = F.linear(F.normalize(input), F.normalize(self.weight))
+        output = F.linear(F.normalize(input), F.normalize(self.weight)) * self.s
         return output
 
 
