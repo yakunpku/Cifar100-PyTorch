@@ -36,7 +36,7 @@ class Evaluator(object):
 
         network.train()
         return top1.avg, top5.avg, losses.avg if losses is not None else None
-    
+
     # @staticmethod
     # def extract_embedding(network,
     #             device,

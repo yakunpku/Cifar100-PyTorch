@@ -5,8 +5,6 @@ python train.py \
 --arch $arch \
 --block-name Bottleneck \
 --seed 0 \
---metric arc_margin \
---easy_margin \
 --optimizer SGD \
 --loss_type ce \
 --num-classes 100 \

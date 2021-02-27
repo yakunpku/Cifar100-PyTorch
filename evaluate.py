@@ -40,7 +40,7 @@ def main():
 
     network = define_net(checkpoint['arch'], checkpoint['block_name'], args.num_classes).to(device)
 
-    network.load_state_dict(checkpoint['network_state_dict'])
+    network.load_state_dict(checkpoint['state_dict'])
 
     logger.info('Best Acc: {:.3f}'.format(float(checkpoint['best_acc'].numpy())))
     test_dataloader = create_dataloader(cfg.test_image_dir, cfg.test_image_list, phase='test')
@@ -48,10 +48,10 @@ def main():
     macs, params = get_model_complexity_info(network, (3, 32, 32), as_strings=True,
                                                 print_per_layer_stat=False, verbose=True)
     
-    logger.info('Network: {}'.format(args.arch))
+    logger.info('Network: {}, Block Name: {}'.format(checkpoint['arch'], checkpoint['block_name']))
     logger.info('{} {}'.format('Computational Complexity: ', macs))
     logger.info('{} {}'.format('Number of Parameters: ', params))
-    top1, top5, _ = Evaluator.eval(network, metric_fc, device, test_dataloader)
+    top1, top5, _ = Evaluator.eval(network, device, test_dataloader)
     logger.info('Evaluate Acc Top1: {0:.3f}%, Acc Top5: {1:.3f}%'.format(top1, top5))
 
 
