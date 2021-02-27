@@ -116,7 +116,7 @@ class ResNet(nn.Module):
         self.layer2 = self._make_layer(block, 32, n, stride=2)
         self.layer3 = self._make_layer(block, 64, n, stride=2)
         self.avgpool = nn.AvgPool2d(8)
-        # self.fc = nn.Linear(64 * block.expansion, num_classes)
+        self.fc = nn.Linear(64 * block.expansion, num_classes)
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -125,6 +125,10 @@ class ResNet(nn.Module):
             elif isinstance(m, nn.BatchNorm2d):
                 m.weight.data.fill_(1)
                 m.bias.data.zero_()
+            elif isinstance(m, nn.Linear):
+                nn.init.normal_(m.weight, std=1.0e-3)
+                if m.bias is not None:
+                    nn.init.constant_(m.bias, 0)
 
     def _make_layer(self, block, planes, blocks, stride=1):
         downsample = None
@@ -154,6 +158,6 @@ class ResNet(nn.Module):
 
         x = self.avgpool(x)
         x = x.view(x.size(0), -1)
-        # x = self.fc(x)
+        x = self.fc(x)
 
         return x
