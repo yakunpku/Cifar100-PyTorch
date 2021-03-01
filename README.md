@@ -1,7 +1,7 @@
 # Cifar100-PyTorch
 Classification on CIFAR-100 with PyTorch.
 
-## Preliminaries
+## Prerequisites
 Please see the [tutorials/cifar100_tutorials.ipynb](tutorials/cifar100_tutorials.ipynb) to organize the CIFAR-100 train dataset and test dataset.
 
 ## Usage
