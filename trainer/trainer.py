@@ -41,7 +41,7 @@ class Trainer(object):
         top1 = AverageMeter()
         top5 = AverageMeter()
 
-        valid_logs = []
+        test_logs = []
         best_acc = 0
         for epoch in range(self.start_epoch, self.args.num_epochs):
             start_time = time.time()
@@ -67,7 +67,7 @@ class Trainer(object):
             test_top1, test_top5, test_loss = Evaluator.eval(self.network, self.device, self.test_dataloader, self.loss_func)
             current_lr = self.optimizer.param_groups[0]['lr']
 
-            valid_logs.append((epoch, test_top1, test_top5))
+            test_logs.append((epoch, top1, test_top1))
 
             end_time = time.time()
             cost_time = end_time - start_time
@@ -86,4 +86,4 @@ class Trainer(object):
             
             self.lr_scheduler.step()
         
-        np.savetxt(os.path.join(self.model_store_path, 'valid_logs.list'), valid_logs, fmt='%f')
+        np.savetxt(os.path.join(self.model_store_path, 'test_logs.list'), test_logs, fmt='%f')

@@ -126,9 +126,9 @@ class ResNet(nn.Module):
                 m.weight.data.fill_(1)
                 m.bias.data.zero_()
             elif isinstance(m, nn.Linear):
-                nn.init.normal_(m.weight, std=1.0e-3)
                 if m.bias is not None:
                     nn.init.constant_(m.bias, 0)
+
 
     def _make_layer(self, block, planes, blocks, stride=1):
         downsample = None

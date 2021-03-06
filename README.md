@@ -5,12 +5,12 @@ Classification on CIFAR-100 with PyTorch.
 Please see the [tutorials/cifar100_tutorials.ipynb](tutorials/cifar100_tutorials.ipynb) to organize the CIFAR-100 train dataset and test dataset.
 
 ## Usage
-### Train 
+### Training 
 ```shell
 sh train_cifar100.sh resnet-110 0
 ```
 
-### Evaluate
+### Evaluation
 ```shell
 python evaluate.py --checkpoint-path experiments/resnet-110/checkpoint_best.pth --gpu 0
 ```
@@ -24,3 +24,7 @@ python evaluate.py --checkpoint-path experiments/resnet-110/checkpoint_best.pth 
 | resnet-110(Bottleneck, Label Smooth)           |      1.17 M    |      0.17      |    71.370 %   |    90.810 %    |
 | resnet-110(Bottleneck, Warmup Step 5)          |      1.17 M    |      0.17      |    72.250 %   |    92.430 %    |
 | resnet-110(Bottleneck, cosine_lr)              |      1.17 M    |      0.17      |    71.370 %   |    91.480 %    |
+
+<div align="left">
+  <img src="resources/resnet50-valid_acc_top1.png" height="150" width="250"/>
+</div>
