@@ -26,5 +26,5 @@ python evaluate.py --checkpoint-path experiments/resnet-110/checkpoint_best.pth 
 | resnet-110(Bottleneck, cosine_lr)              |      1.17 M    |      0.17      |    71.370 %   |    91.480 %    |
 
 <div align="left">
-  <img src="resources/resnet50-valid_acc_top1.png" height="150" width="250"/>
+  <img src="resources/resnet50-valid_acc_top1.png" height="321" width="615"/>
 </div>
