@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block head %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+  <h1 class="h2">heatmap</h1>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<div class="btn-group">
+  <button type="button" class="btn btn-info">TopK</button>
+  <button type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+  </button>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="/nearest_neighbor_search?topk=1">1</a><li>
+    <li><a class="dropdown-item" href="/nearest_neighbor_search?topk=5">5</a><li>
+  </ul>
+</div>
+
+{% if params.msg.msg_type == 0 %}
+<table class="table">
+  <thead>
+    <tr>
+        <th>candidate image</th>
+        <th>target image</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      {% if params.cand_image_path != '' %}
+      <td>
+        <p>{{ params.image_name }}</p>
+        <img class="rounded float-left" width="128" height="128" src="{{ params.cand_image_path }}">
+      </td>
+      {% endif %}
+
+      {% if params.tgt_image_path != '' %}
+      <td>
+        <p>{{ params.tgt_name }}</p>
+        {% for tgt_image_path in params.tgt_images_path %}
+        <img class="rounded float-left" width="128" height="128" src="{{ tgt_image_path }}">
+        {% endfor %}
+      </td>
+      {% endif %}
+    </tr>
+  </tbody>
+</table>
+{% elif params.msg.msg_type == -1 %}
+<h2 class="h2">{{ params.msg.msg_info }}<a class="nav-link active" href="/start"> Candidate </a></h2>
+{% endif %}
+
+{% endblock %}

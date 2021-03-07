@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block head %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+  <h1 class="h2">heatmap</h1>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<div class="btn-group">
+  <button type="button" class="btn btn-primary">Candidates</button>
+  <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+  </button>
+  <ul class="dropdown-menu">
+    {% for image_name in params.images %}
+    <li><a class="dropdown-item" href="/heatmap?image_name={{ image_name }}">{{ image_name}}</a><li>
+    {% endfor %}
+  </ul>
+</div>
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+</div>
+
+{% if params.image_name != '' %}
+    <h2 class="h2">{{ params.image_name }}</h2>
+{% endif %}
+
+{% endblock %}
