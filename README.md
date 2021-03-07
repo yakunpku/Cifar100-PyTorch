@@ -50,7 +50,5 @@ python evaluate.py --checkpoint-path experiments/resnet-110/checkpoint_best.pth 
 ### WebView
 
 #### Heatmap Visualization
-Heatmap Visualization
 
 #### Nearest Neighbor Search
-Nearest Neighbor Search
