@@ -48,10 +48,6 @@ python evaluate.py --checkpoint-path experiments/resnet-110/checkpoint_best.pth 
 | resnet-110(Bottleneck, Warmup Step 5)          |      1.17 M    |      0.17      |    72.250 %   |    92.430 %    |
 
 ### WebView
-Page:
-<div align="left">
-  <img src="resources/web_view.png" height="400" width="650"/>
-</div>
 
 #### Heatmap Visualization
 Heatmap Visualization
