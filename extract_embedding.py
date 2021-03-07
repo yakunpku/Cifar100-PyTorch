@@ -45,8 +45,8 @@ def main():
     test_embeddings = Evaluator.extract_embedding(network, device, test_dataloader)
     test_embeddings = np.vstack(test_embeddings)
 
-    os.makedirs('embeddings', exist_ok=True)
-    np.savetxt(os.path.join('embeddings/test_embeddings.list'), test_embeddings, fmt='%f')
+    os.makedirs(cfg.embedding_dir, exist_ok=True)
+    np.savetxt(os.path.join(cfg.embedding_dir, 'test_embeddings.list'), test_embeddings, fmt='%f')
 
 if __name__ == '__main__':
     main()

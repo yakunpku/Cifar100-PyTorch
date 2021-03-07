@@ -54,9 +54,9 @@ class Evaluator(object):
                     x = module(x)
                     if name == tgt_layer:
                         x = torch.squeeze(x)
-                        if x.dim == 1:
+                        if x.dim() == 1:
                             x = torch.unsqueeze(x, dim=0)
-                        x = x.float().cpu()
+                        x = x.float().cpu().numpy()
                         embeddings.append(x)
                         break
                 pbar.update(x.shape[0])

@@ -2,6 +2,9 @@ import os
 import logging
 
 class Config:
+
+    embedding_dir = "/data/Images/cifar100/source/embeddings"
+
     train_image_dir = "/data/Images/cifar100/source/train/images"
     train_image_list = "/data/Images/cifar100/source/train/image.list"
 
