@@ -67,7 +67,7 @@ class Trainer(object):
             test_top1, test_top5, test_loss = Evaluator.eval(self.network, self.device, self.test_dataloader, self.loss_func)
             current_lr = self.optimizer.param_groups[0]['lr']
 
-            test_logs.append((epoch, top1, test_top1))
+            test_logs.append((epoch, test_top1, test_top5))
 
             end_time = time.time()
             cost_time = end_time - start_time

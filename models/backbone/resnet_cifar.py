@@ -106,7 +106,6 @@ class ResNet(nn.Module):
         else:
             raise ValueError('block_name shoule be Basicblock or Bottleneck')
 
-
         self.inplanes = 16
         self.conv1 = nn.Conv2d(3, 16, kernel_size=3, padding=1,
                                bias=False)
@@ -125,10 +124,6 @@ class ResNet(nn.Module):
             elif isinstance(m, nn.BatchNorm2d):
                 m.weight.data.fill_(1)
                 m.bias.data.zero_()
-            elif isinstance(m, nn.Linear):
-                if m.bias is not None:
-                    nn.init.constant_(m.bias, 0)
-
 
     def _make_layer(self, block, planes, blocks, stride=1):
         downsample = None
