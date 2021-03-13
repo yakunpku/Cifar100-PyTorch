@@ -15,14 +15,12 @@ from losses import losses
 from utils.lr_schedulers import WarmUpMultiStepLR, WarmUpCosineLR
 from trainer import trainer
 
-
 def set_random_seed(seed):
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)
-
 
 def parse_args():
     import argparse
@@ -118,7 +116,6 @@ def parse_args():
                         help="the classification model store folder")
     args = parser.parse_args()
     return args
-
 
 class Runner(object):
     def __init__(self, args, logger):

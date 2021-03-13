@@ -12,7 +12,6 @@ from models import define_net
 from evaluator.evaluators import Evaluator
 from ptflops import get_model_complexity_info
 
-
 def parse_args():
     import argparse
     parser = argparse.ArgumentParser(description="The arguments for training the classifier on CIFAR-100 dataset.")
@@ -27,7 +26,6 @@ def parse_args():
                         help="to assign the gpu to train the network")
     args = parser.parse_args()
     return args
-
 
 def main():
     args = parse_args()

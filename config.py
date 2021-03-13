@@ -26,7 +26,6 @@ class Config:
     # num_workers = 4
     # print_interval = 30
 
-
 def setup_logger(logger_name, phase, level=logging.INFO, tofile=False):
     if tofile:
         loger_file = os.path.join(os.path.abspath(os.path.dirname(__file__)), '{}.log'.format(phase))

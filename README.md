@@ -48,7 +48,9 @@ python evaluate.py --checkpoint-path experiments/resnet-110/checkpoint_best.pth 
 | resnet-110(Bottleneck, Warmup Step 5)          |      1.17 M    |      0.17      |    72.250 %   |    92.430 %    |
 
 ### WebView
-
-#### Heatmap Visualization
-
-#### Nearest Neighbor Search
+Use flask framework to implement two tools: Heatmap Visualization, Nearest Neighbor Search.
+```shell
+cd webview
+python runserver.py
+```
+To open http://'remote ip':8050 with browser.
