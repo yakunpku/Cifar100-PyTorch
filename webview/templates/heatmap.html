@@ -7,22 +7,35 @@
 
 {% block content %}
 
-<div class="btn-group">
-  <button type="button" class="btn btn-primary">Candidates</button>
-  <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-  </button>
-  <ul class="dropdown-menu">
-    {% for image_name in params.images %}
-    <li><a class="dropdown-item" href="/heatmap?image_name={{ image_name }}">{{ image_name}}</a><li>
-    {% endfor %}
-  </ul>
-</div>
+{% if params.msg.msg_type == 0 %}
+<table class="table">
+  <thead>
+    <tr>
+        <th>candidate image</th>
+        <th>cam image</th>
+    </tr>
+  </thead>
 
-<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-</div>
+  <tbody>
+    <tr>
+      {% if params.image_name != '' %}
+      <td>
+        <p>{{ params.image_name }}</p>
+        <img class="rounded float-left" width="128" height="128" src="{{ params.image_path }}">
+      </td>
+      {% endif %}
 
-{% if params.image_name != '' %}
-    <h2 class="h2">{{ params.image_name }}</h2>
+      {% if params.cam_name != '' %}
+      <td>
+        <p>{{ params.cam_name }}</p>
+        <img class="rounded float-left" width="128" height="128" src="{{ params.cam_path }}">
+      </td>
+      {% endif %}
+    </tr>
+  </tbody>
+</table>
+{% elif params.msg.msg_type == -1 %}
+<h2 class="h2">{{ params.msg.msg_info }}<a class="nav-link active" href="/start"> Candidate </a></h2>
 {% endif %}
 
 {% endblock %}
