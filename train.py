@@ -162,7 +162,7 @@ class Runner(object):
     def run(self):
         device = 'cuda:{}'.format(self.args.gpu)
 
-        train_dataloader = create_dataloader(cfg.train_image_dir, cfg.train_image_list, phase='train', \
+        train_dataloader = create_dataloader(cfg.train_image_dir, cfg.train_image_list, phase='train', 
             batch_size=self.args.batch_size, num_workers=self.args.num_workers)
         test_dataloader = create_dataloader(cfg.test_image_dir, cfg.test_image_list, phase='test')
 
