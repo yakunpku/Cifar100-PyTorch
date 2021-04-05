@@ -96,7 +96,7 @@ def cifar_nearest_neighbor_search():
         try:
             cand_idx = int(image_name.split('_')[0])
         except:
-            raise ValueError("Parsing the 'image_name' attribuate encount error, 'image_name': {}".format(image_name))
+            raise ValueError("Parsing the 'image_name' attribute encount error, 'image_name': {}".format(image_name))
         test_embeddings = np.loadtxt(cfg.test_embeddings, dtype=np.float32)
         cand_embed = test_embeddings[cand_idx]
 
